@@ -16,11 +16,12 @@ const HomeContainer = () => {
   );
   const [alertOn, setShowAlert] = useState(false);
   const [alertText, setAlertText] = useState(false);
+  const [alertType, setAlertType] = useState('');
 
-  const showAlert = (text) => {
+  const showAlert = (text, type) => {
     setAlertText(text);
     setShowAlert(true);
-
+    setAlertType(type);
     window.setTimeout(() => {
       setShowAlert(false);
     }, 2000);
@@ -29,6 +30,7 @@ const HomeContainer = () => {
   const handleRemoveProduct = (id) => {
     const filteredProducts = products.filter((item) => item.id !== id);
     setProducts(filteredProducts);
+    showAlert(`Item has been removed from inventory`, 'danger');
   };
 
   const onProductEdit = (e, id) => {
@@ -54,7 +56,7 @@ const HomeContainer = () => {
         });
         setProducts(newList);
       }
-      showAlert("Price must be 0 or a positive number");
+      showAlert("Price must be 0 or a positive number", "danger");
     }
   };
 
@@ -71,7 +73,7 @@ const HomeContainer = () => {
       !newProduct.description ||
       !newProduct.imageUrl
     ) {
-      showAlert("All fields must be filled before adding the product");
+      showAlert("All fields must be filled before adding the product", 'danger');
       return;
     }
     const newItem = {
@@ -83,6 +85,7 @@ const HomeContainer = () => {
       description: newProduct.description,
     };
     setProducts([...products, newItem]);
+    showAlert(`Item '${newProduct.title}' has been added to inventory`, 'primary');
     setNewProduct({
       title: "",
       price: 0,
@@ -129,7 +132,7 @@ const HomeContainer = () => {
         removeProductText = 'Remove Product'
         header = 'Inventory'
       />
-      {alertOn && <Alert text={alertText} />}
+      {alertOn && <Alert text={alertText} type = {alertType} />}
     </>
   );
 };
