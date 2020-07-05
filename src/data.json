@@ -1,0 +1,21 @@
+{
+    "products": [
+      {
+        "id": 1,
+        "title": "Title of Item 1",
+        "price": 24,
+        "imageUrl": "url 1",
+        "description": "Description lorem ipsum Lorem ipsum lorem ipsum",
+        "count": 0
+      },
+      {
+        "id": 2,
+        "title": "Title of Item 2",
+        "price": 34,
+        "imageUrl": "url 2",
+        "description": "Description lorem ipsum Lorem ipsum lorem ipsum",
+        "count": 0
+      }
+    ]
+
+  }
