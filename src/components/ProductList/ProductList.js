@@ -55,4 +55,4 @@ const ProductList = ({ products, handleAddToChart, header, buttonText }) => {
   );
 };
 
-export default ProductList;
+export default React.memo(ProductList);

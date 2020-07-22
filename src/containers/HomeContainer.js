@@ -1,4 +1,4 @@
-import React, { useState, useReducer } from "react";
+import React, { useState, useReducer, useCallback } from "react";
 import { Inventory, ShoppingCart, ProductList, Alert } from "../components";
 import uuid from "react-uuid";
 import data from "./../data.json";
@@ -16,7 +16,7 @@ const HomeContainer = () => {
   );
   const [alertOn, setShowAlert] = useState(false);
   const [alertText, setAlertText] = useState(false);
-  const [alertType, setAlertType] = useState('');
+  const [alertType, setAlertType] = useState("");
 
   const showAlert = (text, type) => {
     setAlertText(text);
@@ -30,7 +30,7 @@ const HomeContainer = () => {
   const handleRemoveProduct = (id) => {
     const filteredProducts = products.filter((item) => item.id !== id);
     setProducts(filteredProducts);
-    showAlert(`Item has been removed from inventory`, 'danger');
+    showAlert(`Item has been removed from inventory`, "danger");
   };
 
   const onProductEdit = (e, id) => {
@@ -73,7 +73,10 @@ const HomeContainer = () => {
       !newProduct.description ||
       !newProduct.imageUrl
     ) {
-      showAlert("All fields must be filled before adding the product", 'danger');
+      showAlert(
+        "All fields must be filled before adding the product",
+        "danger"
+      );
       return;
     }
     const newItem = {
@@ -85,7 +88,10 @@ const HomeContainer = () => {
       description: newProduct.description,
     };
     setProducts([...products, newItem]);
-    showAlert(`Item '${newProduct.title}' has been added to inventory`, 'primary');
+    showAlert(
+      `Item '${newProduct.title}' has been added to inventory`,
+      "primary"
+    );
     setNewProduct({
       title: "",
       price: 0,
@@ -94,31 +100,40 @@ const HomeContainer = () => {
     });
   };
 
-  const handleRemoveFromChart = (id) => {
-    const newProductList = products.map((product) => {
-      return product.id === id ? { ...product, count: 0 } : product;
-    });
-    setProducts(newProductList);
-  };
+  const memoizedHandleRemoveFromChart = useCallback(
+    (id) => {
+      const newProductList = products.map((product) => {
+        return product.id === id ? { ...product, count: 0 } : product;
+      });
+      setProducts(newProductList);
+    },
+    [products]
+  );
 
-  const handleAddToChart = (id) => {
-    const newProductList = products.map((product) => {
-      return product.id === id
-        ? { ...product, count: product.count + 1 }
-        : product;
-    });
-    setProducts(newProductList);
-  };
+  const memoizedHandleAddToChart = useCallback(
+    (id) => {
+      const newProductList = products.map((product) => {
+        return product.id === id
+          ? { ...product, count: product.count + 1 }
+          : product;
+      });
+      setProducts(newProductList);
+    },
+    [products]
+  );
 
-  //chart should have only count > 0
-  const filteredChartProducts = products.filter((product) => product.count > 0);
   return (
     <>
-      <ProductList products={products} handleAddToChart={handleAddToChart} header = 'Product List' buttonText = 'Add to Order'  />
+      <ProductList
+        products={products}
+        handleAddToChart={memoizedHandleAddToChart}
+        header="Product List"
+        buttonText="Add to Order"
+      />
       <ShoppingCart
-        products={filteredChartProducts}
-        handleRemoveFromChart={handleRemoveFromChart}
-        header = 'Shopping Cart'
+        products={products}
+        handleRemoveFromChart={memoizedHandleRemoveFromChart}
+        header="Shopping Cart"
       />
       <Inventory
         products={products}
@@ -128,11 +143,11 @@ const HomeContainer = () => {
         newProduct={newProduct}
         onProductEdit={onProductEdit}
         onPriceKeyDown={onPriceKeyDown}
-        addNewProductText = 'Add Product'
-        removeProductText = 'Remove Product'
-        header = 'Inventory'
+        addNewProductText="Add Product"
+        removeProductText="Remove Product"
+        header="Inventory"
       />
-      {alertOn && <Alert text={alertText} type = {alertType} />}
+      {alertOn && <Alert text={alertText} type={alertType} />}
     </>
   );
 };

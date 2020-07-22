@@ -11,7 +11,7 @@ const ShoppingCart = ({ products, handleRemoveFromChart, header }) => {
     <div className="category-container shopping-item">
       <h4>{header}</h4>
       {products.map((product) => {
-        return (
+        return ( product.count > 0 &&
           <Card key={product.id}>
             <Card.Body>
               <Row>
@@ -46,4 +46,4 @@ const ShoppingCart = ({ products, handleRemoveFromChart, header }) => {
   );
 };
 
-export default ShoppingCart;
+export default React.memo(ShoppingCart);
